@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": ["F:/MinGW/include/**", "${workspaceFolder}/**"],
+            "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+            "windowsSdkVersion": "8.1",
+            "compilerPath": "F:/MinGW/bin/g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x86"
+        }
+    ],
+    "version": 4
+}
