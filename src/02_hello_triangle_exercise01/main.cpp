@@ -1,3 +1,6 @@
+/*
+这里只需要将顶点坐标增加三组作为第二个三角形，并将glDrawArrays的第三个参数从3改为6
+*/
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -55,7 +58,10 @@ int main()
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f};
+        0.0f, 0.5f, 0.0f,
+        -0.9f, -0.23f, 0.0f,
+        0.27f, -0.13f, 0.0f,
+        -0.45f, 0.16f, 0.0f};
 
     // 声明顶点缓冲对象，在GPU上创建内存，存储顶点数据
     unsigned int VBO, VAO;
@@ -137,8 +143,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(VAO);   
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
