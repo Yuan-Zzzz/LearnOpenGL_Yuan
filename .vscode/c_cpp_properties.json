@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "Win32",
-            "includePath": ["F:/MinGW/include/**", "${workspaceFolder}/**"],
+            "includePath": ["F:/MinGW/include/**", "${workspaceFolder}/**","${workspaceFolder}/include/**"],
             "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
             "windowsSdkVersion": "8.1",
             "compilerPath": "F:/MinGW/bin/g++.exe",
