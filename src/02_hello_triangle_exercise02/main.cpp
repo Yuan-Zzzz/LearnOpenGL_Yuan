@@ -1,6 +1,3 @@
-/*
-这里只需要将顶点坐标增加三组作为第二个三角形，并将glDrawArrays的第三个参数从3
-*/
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -54,44 +51,34 @@ int main()
     // 注册回调
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // 声明一个float数组，指定要生成得三角形的顶点
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f,
-        -0.9f, -0.23f, 0.0f,
-        0.27f, -0.13f, 0.0f,
-        -0.45f, 0.16f, 0.0f};
-
+    float firstTriangle[] = {
+        -0.9f, -0.5f, 0.0f, // 左顶点
+        -0.0f, -0.5f, 0.0f, // 右顶点
+        -0.45f, 0.5f, 0.0f, // 上顶点
+    };
+    float secondTriangle[] = {
+        0.0f, -0.5f, 0.0f, // 左顶点
+        0.9f, -0.5f, 0.0f, // 右顶点
+        0.45f, 0.5f, 0.0f  // 上顶点
+    };
     // 声明顶点缓冲对象，在GPU上创建内存，存储顶点数据
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    // 顶点缓冲对象的缓冲类型是GL_ARRAY_BUFFER
-    // 把新声明的顶点缓冲对象绑定到GL_ARRAY_BUFFER中
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindVertexArray(VAO);
-    // glBufferData是一个专门用来把用户定义的数据复制到当前绑定缓冲的函数。
-    // 第一个参数是目标缓冲的类型：顶点缓冲对象当前绑定到GL_ARRAY_BUFFER目标上
-    // 第二个参数指定传输数据的大小(以字节为单位)；用一个简单的sizeof计算出顶点数据大小就行
-    // 第三个参数是我们希望发送的实际数据
-    // 第四个参数指定了我们希望显卡如何管理给定的数据
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    unsigned int VBO[2],
+        VAO[2];
+    glGenVertexArrays(2, VAO);
+    glGenBuffers(2, VBO);
 
-    // 解析顶点数据
-    //告诉VAO该如何解释VBO
-    //参数1为位置
-    //参数2为顶点熟悉大小
-    //参数3指定数据类型
-    //参数4指定是否被标准化
-    //参数5为步长，下个组位置数据在3个float之后，我们把步长设置为3 * sizeof(float)
+    // 第一个三角形
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+    glBindVertexArray(VAO[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(firstTriangle), firstTriangle, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    //启用顶点属性
     glEnableVertexAttribArray(0);
-    //绑定VAO()
-    glBindBuffer(GL_ARRAY_BUFFER,0);
-    glBindVertexArray(0);
-
+    // 第二个三角形
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+    glBindVertexArray(VAO[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(secondTriangle), secondTriangle, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
     // 创建顶点着色器对象
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -131,7 +118,6 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-
     // 渲染循环
     while (!glfwWindowShouldClose(window))
     {
@@ -143,9 +129,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);   
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
+        glBindVertexArray(VAO[0]);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(VAO[1]);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -153,7 +140,6 @@ int main()
     // 释放资源
     glfwTerminate();
     return 0;
-
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
