@@ -37,9 +37,11 @@ int main()
     // 注册回调
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f};
+        // 顶点位置        // 颜色
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // 右
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 左
+        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // 上
+    };
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -50,11 +52,14 @@ int main()
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    // 位置
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+    // 颜色
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 *sizeof(float)));
+    glEnableVertexAttribArray(1);
 
-    Shader shader("shader.vs", "shader.fs");
-
+    Shader shader("./src/03_shaders/shader.vert", "./src/03_shaders/shader.frag");
     // 渲染循环
     while (!glfwWindowShouldClose(window))
     {
@@ -66,7 +71,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
