@@ -136,6 +136,7 @@ int main(int argc, char *argv[])
   stbi_image_free(data);
 
   ourShader.use();
+  //将texture1设置为纹理单元0（对应下方GL_TEXTURE0）
   ourShader.setInt("texture1", 0);
   ourShader.setInt("texture2", 1);
 
