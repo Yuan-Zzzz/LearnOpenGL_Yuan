@@ -217,6 +217,18 @@ int main()
         // 对视图矩阵进行位移，使得物体在屏幕内
         float radius = 10.0f;
 
+        //------------------------------定义LookAt矩阵---------------------------------
+        //LookAt函数生成一个视图矩阵，它会将所有的坐标从世界空间转换到观察空间
+        //第一个参数是一个位置向量，用来指定摄像机在世界空间的位置
+        //第二个参数也是一个位置向量，用来指向摄像机所看向的点
+        //第三个参数是一个向上向量。它指定了世界空间中的上向量
+        //------------------------------工作原理----------------------------------------
+        //1.方向向量
+        //glm::vec3 zaxis = glm::normalize(cameraPos - (cameraPos + cameraFront));
+        //2.右向量
+        //glm::vec3 xaxis = glm::normalize(glm::cross(cameraUp, zaxis));
+        //3.上向量
+        //glm::vec3 yaxis = glm::cross(zaxis, xaxis);
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
