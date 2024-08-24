@@ -181,12 +181,12 @@ int main()
     ourShader.use();
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
-
+    float rotationAngle = 0.0f;
     while (!glfwWindowShouldClose(window))
     {
 
         processInput(window);
-
+        rotationAngle += 1.0f;
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -198,8 +198,8 @@ int main()
         ourShader.use();
 
         // 创建变换
-        glm::mat4 view = glm::mat4(1.0f);       // 确保视图矩阵每次都被重置
-        glm::mat4 projection = glm::mat4(1.0f); // 确保投影矩阵每次都被重置
+        glm::mat4 view = glm::mat4(1.0f);       // 确保视图矩阵每次都被重置为单位矩阵
+        glm::mat4 projection = glm::mat4(1.0f); // 确保投影矩阵每次都被重置为单位矩阵
         //创建投影透视矩阵
         projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         //对视图矩阵进行位移，使得物体在屏幕内
@@ -207,15 +207,15 @@ int main()
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
-        // render boxes
+        // 渲染Box
         glBindVertexArray(VAO);
         for (unsigned int i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
-            // 位移
+            // 模型矩阵 位移
             model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            // 旋转
+            float angle = 20.0f * i + rotationAngle;
+            // 模型矩阵 旋转
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
             ourShader.setMat4("model", model);
 
