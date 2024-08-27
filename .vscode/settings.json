@@ -52,7 +52,7 @@
         "typeinfo": "cpp"
     },
     "cmake.configureOnOpen": false,
-    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.errorSquiggles": "enabled",
     "github.copilot.advanced": {
         "authProvider": "github"
     }
