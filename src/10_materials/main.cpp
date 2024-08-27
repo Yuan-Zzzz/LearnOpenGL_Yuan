@@ -167,16 +167,19 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+
         // 激活着色器
         lightingShader.use();
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        lightingShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
-        lightingShader.setVec3("lightPos", lightPos);
         lightingShader.setVec3("viewPos", camera.Position);
         lightingShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
         lightingShader.setFloat("material.shininess", 32.0f);
+        lightingShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
+        lightingShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f);
+        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f); 
+        lightingShader.setVec3("light.position", lightPos);
 
         // 设置立方体
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
