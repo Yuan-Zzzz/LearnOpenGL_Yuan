@@ -131,8 +131,6 @@ int main()
 
     glBindVertexArray(cubeVAO);
 
- 
-
     // 位置属性
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
@@ -152,10 +150,12 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-     // 加载纹理
-     unsigned int diffuseMap = loadTexture("./static/texture/container2.png");
-     lightingShader.use();
-     lightingShader.setInt("material.diffuse", 0);
+    // 加载纹理
+    unsigned int diffuseMap = loadTexture("./static/texture/container2.png");
+    unsigned int specularMap = loadTexture("./static/texture/container2_specular.png");
+    lightingShader.use();
+    lightingShader.setInt("material.diffuse", 0);
+    lightingShader.setInt("material.specular", 1);
 
     // 渲染循环
     // -----------
@@ -198,7 +198,10 @@ int main()
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
-        
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
+
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 

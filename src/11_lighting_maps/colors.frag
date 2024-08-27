@@ -2,7 +2,7 @@
 //材质结构体
 struct Material {
     sampler2D diffuse;
-    vec3 specular;
+    sampler2D specular;
     float shininess;
 }; 
 
@@ -46,7 +46,7 @@ void main()
     //计算高光强度 反射方向与视线方向夹角越小 高光越强
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     //计算高光光照
-    vec3 specular = material.specular * spec * light.specular;
+    vec3 specular = vec3(texture(material.specular,TexCoords)) * spec * light.specular;
 
     //----------------------------------计算光照结果---------------------------------------
     vec3 result = (ambient + diffuse + specular) * objectColor;
