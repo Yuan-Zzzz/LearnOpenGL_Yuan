@@ -11,15 +11,18 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <tool/shader.h>
+#include <tool/mesh.h>
+#include <tool/stb_image.h>
 using namespace std;
 unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
 class Model
 {
 public:
-	vector<Texture> textures_loaded; // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-	vector<Mesh> meshes;
-	string directory;
-	bool gammaCorrection;
+	vector<Texture> textures_loaded; //已加载的纹理
+	vector<Mesh> meshes; //网格
+	string directory; //模型所在目录
+	bool gammaCorrection; //gamma矫正
 
 	Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
 	{
@@ -35,47 +38,54 @@ public:
 private:
 	void loadModel(string const &path)
 	{
-		// read file via ASSIMP
+		// 通过Assimp库读取模型
 		Assimp::Importer importer;
 		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-		// check for errors
+		// 检查是否加载成功
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 		{
 			cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
 			return;
 		}
-		// retrieve the directory path of the filepath
+		// 获取模型所在目录
 		directory = path.substr(0, path.find_last_of('/'));
 
-		// process ASSIMP's root node recursively
+		// 处理根节点
 		processNode(scene->mRootNode, scene);
 	}
 
-	// processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
+	// 处理节点
 	void processNode(aiNode *node, const aiScene *scene)
 	{
 		// process each mesh located at the current node
+		// 处理当前节点的所有网格
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			// the node object only contains indices to index the actual objects in the scene.
 			// the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
+			// 节点对象只包含索引，用于索引场景中的实际对象。
+			// 场景包含所有数据，节点只是为了保持组织（如节点之间的关系）。
 			aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
 			meshes.push_back(processMesh(mesh, scene));
 		}
 		// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
+		// 递归处理每个子节点
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
 			processNode(node->mChildren[i], scene);
 		}
 	}
+	// 处理网格
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene)
 	{
 		// data to fill
+		// 用于填充的数据
 		vector<Vertex> vertices;
 		vector<unsigned int> indices;
 		vector<Texture> textures;
 
-		// walk through each of the mesh's vertices
+		// Walk through each of the mesh's vertices
+		// 遍历网格的每个顶点
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
@@ -86,6 +96,7 @@ private:
 			vector.z = mesh->mVertices[i].z;
 			vertex.Position = vector;
 			// normals
+			// 法线
 			if (mesh->HasNormals())
 			{
 				vector.x = mesh->mNormals[i].x;
@@ -94,6 +105,7 @@ private:
 				vertex.Normal = vector;
 			}
 			// texture coordinates
+			// 纹理坐标
 			if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
 			{
 				glm::vec2 vec;
@@ -119,6 +131,7 @@ private:
 			vertices.push_back(vertex);
 		}
 		// now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
+		// 现在遍历网格的每个面（一个面是网格的三角形）并检索相应的顶点索引。
 		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		{
 			aiFace face = mesh->mFaces[i];
@@ -127,6 +140,7 @@ private:
 				indices.push_back(face.mIndices[j]);
 		}
 		// process materials
+		// 处理材质
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 		// we assume a convention for sampler names in the shaders. Each diffuse texture should be named
 		// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
