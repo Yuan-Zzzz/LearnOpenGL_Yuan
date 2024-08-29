@@ -55,5 +55,6 @@
     "C_Cpp.errorSquiggles": "enabled",
     "github.copilot.advanced": {
         "authProvider": "github"
-    }
+    },
+    "C_Cpp.default.compilerPath": "F:\\MinGW\\bin\\gcc.exe"
 }

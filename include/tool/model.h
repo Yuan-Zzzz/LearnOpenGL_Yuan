@@ -42,7 +42,7 @@ private:
 		Assimp::Importer importer;
 		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 		// 检查是否加载成功
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
 		{
 			cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
 			return;
@@ -142,12 +142,8 @@ private:
 		// process materials
 		// 处理材质
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-		// we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-		// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
-		// Same applies to other texture as the following list summarizes:
-		// diffuse: texture_diffuseN
-		// specular: texture_specularN
-		// normal: texture_normalN
+		
+		//加载材质纹理
 
 		// 1. diffuse maps
 		vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
